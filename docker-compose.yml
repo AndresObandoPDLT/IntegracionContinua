@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./server
+    container_name: express-backend
+    ports:
+      - "3005:3005"
+    environment:
+      - PORT=3005
+      - NODE_ENV=development
+      - FRONTEND_URL=http://localhost:3000
+    networks:
+      - app-network-ci
+  frontend:
+    build: ./web-app
+    container_name: nextjs-frontend
+    ports: 
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3005
+    depends_on:
+      - backend
+    networks:
+      - app-network-ci
+
+networks:
+  app-network-ci:
+    driver: bridge
