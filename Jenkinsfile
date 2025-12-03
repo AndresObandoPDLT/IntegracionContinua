@@ -10,6 +10,7 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 git branch: 'main',
@@ -18,33 +19,34 @@ pipeline {
             }
         }
 
-        stage('Build Docker Images') {
+        stage('Build Images') {
             steps {
                 sh 'docker-compose build'
             }
         }
 
-        stage('Run Containers') {
+        stage('Startup for Tests') {
             steps {
                 sh 'docker-compose up -d'
             }
         }
 
-        stage('Run Tests') {
+        stage('Run Backend Tests') {
             steps {
-                sh 'docker exec jenkins-ci curl -f http://backend:3005 || exit 1'
+                sh 'docker exec express-backend npm test'
             }
         }
 
-        stage('Cleanup') {
+        stage('Deploy') {
             steps {
-                sh 'docker-compose down'
+                echo 'Desplegando aplicación en entorno local...'
+                sh 'docker-compose up -d --build'
             }
         }
 
         stage('Finish') {
             steps {
-                echo 'CI Pipeline completed successfully.'
+                echo 'CI/CD completo: aplicación desplegada automáticamente.'
             }
         }
     }

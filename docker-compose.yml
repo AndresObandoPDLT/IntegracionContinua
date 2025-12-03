@@ -10,6 +10,8 @@ services:
       - PORT=3005
       - NODE_ENV=development
       - FRONTEND_URL=http://localhost:3000
+    volumes:
+      - ./server/src/data:/app/src/data
     networks:
       - app-network-ci
   frontend:
